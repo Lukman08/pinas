@@ -41,7 +41,21 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $file }}</td>
                                             <td>{{ \File::extension($file) }}</td>
-                                            <td>{{ round(\Storage::disk('drive_d')->size($file) / 1048576, 2) }} MB</td>
+                                            @php
+                                                $size = \Storage::disk('drive_d')->size($file);
+                                                $sizeInKb = $size / 1024;
+                                                $sizeInMb = $size / 1048576;
+                                                $sizeInGb = $size / 1073741824;
+                                            @endphp
+                                            <td>
+                                                @if ($sizeInGb >= 1)
+                                                    {{ round($sizeInGb, 2) }} GB
+                                                @elseif ($sizeInMb >= 1)
+                                                    {{ round($sizeInMb, 2) }} MB
+                                                @else
+                                                    {{ round($sizeInKb, 2) }} KB
+                                                @endif
+                                            </td>
                                             <td>{{ \Carbon\Carbon::createFromTimestamp(\Storage::disk('drive_d')->lastModified($file))->format('d/m/Y H:i:s') }}
                                             </td>
                                             <td>

@@ -13,7 +13,7 @@ class UserController extends Controller
         return view('user.index', ['files' => $files]);
     }
 
-    public function userdownload($file)
+    public function download($file)
     {
         $filePath = Storage::disk('drive_d')->path($file);
         if (file_exists($filePath)) {
