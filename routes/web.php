@@ -20,8 +20,25 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [UserController::class, 'index'])->name('index');
 Route::get('/download/{file}', [UserController::class, 'download'])->name('userdownload');
 
-Route::group(['prefix' => 'admin'], function () {
+
+
+
+Route::get('/login', function () {
+    return view('admin.login');
+});
+
+Route::post('/login', function (Illuminate\Http\Request $request) {
+    return app()->make(\App\Http\Middleware\CheckLogin::class)->handle($request, function ($request) {
+        // Logic setelah middleware berhasil
+        return redirect()->route('dashboard');
+    });
+});
+
+Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+
+Route::middleware(['checklogin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/nas', [AdminController::class, 'nas'])->name('nas');
     Route::get('/download/{file}', [AdminController::class, 'download'])->name('download');
     Route::post('/upload', [AdminController::class, 'upload'])->name('upload');
     Route::delete('/file/{file}', [AdminController::class, 'delete'])->name('delete');

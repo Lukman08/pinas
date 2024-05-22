@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 
@@ -10,8 +11,12 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
+        return view('admin.index');
+    }
+    public function nas()
+    {
         $files = Storage::disk('drive_d')->files('/');
-        return view('admin.index', ['files' => $files]);
+        return view('admin.nas', ['files' => $files]);
     }
 
     public function download($file)
@@ -47,6 +52,15 @@ class AdminController extends Controller
         }
     }
 
+    public function logout(Request $request)
+    {
+        Auth::logout();
 
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
+    }
 
 }
