@@ -7,7 +7,7 @@
         <div class="page-header">
             <div class="row">
                 <div class="col">
-                    <h3 class="page-title">Data Tables</h3>
+                    <h3 class="page-title">Data File</h3>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Data File</li>
@@ -56,7 +56,7 @@
                                                     {{ round($sizeInKb, 2) }} KB
                                                 @endif
                                             </td>
-                                            <td>{{ \Carbon\Carbon::createFromTimestamp(\Storage::disk('drive_d')->lastModified($file))->format('d/m/Y H:i:s') }}
+                                            <td>{{ \Carbon\Carbon::createFromTimestamp(\Storage::disk('drive_d')->lastModified($file))->setTimezone('Asia/Jakarta')->format('d/m/Y H:i:s') }}
                                             </td>
                                             <td>
                                                 <a href="{{ route('download', $file) }}"

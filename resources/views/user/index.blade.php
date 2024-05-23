@@ -152,7 +152,7 @@
                                                         {{ round($sizeInKb, 2) }} KB
                                                     @endif
                                                 </td>
-                                                <td>{{ \Carbon\Carbon::createFromTimestamp(\Storage::disk('drive_d')->lastModified($file))->format('d/m/Y H:i:s') }}
+                                                <td>{{ \Carbon\Carbon::createFromTimestamp(\Storage::disk('drive_d')->lastModified($file))->setTimezone('Asia/Jakarta')->format('d/m/Y H:i:s') }}
                                                 </td>
                                                 <td>
                                                     <a href="{{ route('userdownload', $file) }}"
