@@ -17,7 +17,7 @@ class CheckLogin
     public function handle(Request $request, Closure $next)
     {
         $username = 'guru';
-        $password = 'telematika';
+        $password = 'guru';
 
         if ($request->session()->has('logged_in') && $request->session()->get('logged_in') === true) {
             return $next($request);
