@@ -84,7 +84,7 @@
                         <td>{{ \Carbon\Carbon::createFromTimestamp(\Storage::disk('drive_d')->lastModified($file))->format('d/m/Y H:i:s') }}
                         </td>
                         <td>
-                            <a href="{{ route('download', $file) }}" class="btn btn-sm"
+                            <a href="{{ route('userdownload', $file) }}" class="btn btn-sm"
                                 style="background-color: #6295A2;">Download</a>
                         </td>
                     </tr>

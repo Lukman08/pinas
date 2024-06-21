@@ -48,6 +48,16 @@ class ActionController extends Controller
         }
     }
 
+    public function userdownload($file)
+    {
+        $filePath = Storage::disk('drive_d')->path($file);
+        if (file_exists($filePath)) {
+            return response()->download($filePath);
+        } else {
+            abort(404);
+        }
+    }
+
     public function logout(Request $request)
     {
         Auth::logout();

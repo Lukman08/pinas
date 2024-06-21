@@ -28,7 +28,7 @@ Route::post('/logout', [ActionController::class, 'logout'])->name('logout');
 
 // user
 Route::get('/', [ActionController::class, 'index'])->name('index');
-Route::get('/download/{file}', [ActionController::class, 'download'])->name('download');
+Route::get('/userdownload/{file}', [ActionController::class, 'userdownload'])->name('userdownload');
 
 // admin
 Route::middleware(['checklogin'])->prefix('admin')->group(function () {
