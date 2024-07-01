@@ -119,12 +119,12 @@
     </div>
 
     <!-- Modal Confirm Delete -->
-    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel1"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmModalLabel">Konfirmasi Penghapusan</h5>
+                    <h5 class="modal-title" id="confirmModalLabel1">Konfirmasi Penghapusan</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -144,8 +144,7 @@
     <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form action="{{ route('upload') }}" method="post" enctype="multipart/form-data">
-                @csrf
+            <form id="uploadForm">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="uploadModalLabel">Upload File</h5>
@@ -158,10 +157,14 @@
                             <label for="file">Pilih file:</label>
                             <input type="file" class="form-control-file" id="file" name="file" required>
                         </div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 0%;" id="progressBar">0%
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Upload</button>
+                        <button type="button" class="btn btn-primary" onclick="uploadFile()">Upload</button>
                     </div>
                 </div>
             </form>
@@ -170,17 +173,52 @@
 
     </div>
 
-    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-    {{-- <script src="{{ asset('js/bootstrap.min.js') }}"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('datatable/datatables.min.js') }}"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
+        function uploadFile() {
+            const form = document.getElementById('uploadForm');
+            const formData = new FormData(form);
+            const progressBar = document.getElementById('progressBar');
+
+            axios.post('{{ route('upload') }}', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    onUploadProgress: function(progressEvent) {
+                        let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        progressBar.style.width = percentCompleted + '%';
+                        progressBar.innerHTML = percentCompleted + '%';
+                    }
+                })
+                .then(function(response) {
+                    alert(response.data.success);
+                    progressBar.style.width = '0%';
+                    progressBar.innerHTML = '0%';
+                    location.reload(); // Refresh halaman
+                })
+                .catch(function(error) {
+                    alert('Gagal upload file');
+                    progressBar.style.width = '0%';
+                    progressBar.innerHTML = '0%';
+                });
+        }
+
         $(document).ready(function() {
             $('#logoutBtn').click(function(e) {
                 e.preventDefault();
                 $('#logoutForm').submit();
+            });
+
+            $('#fileTable').DataTable();
+
+            $('#confirmDelete').click(function() {
+                $('#confirmModal').modal('hide');
+                $('#confirmModal').closest('form').submit();
             });
         });
 
@@ -191,11 +229,8 @@
                 button.form.submit();
             });
         }
-
-        $(document).ready(function() {
-            $('#fileTable').DataTable();
-        });
     </script>
+
 </body>
 
 </html>

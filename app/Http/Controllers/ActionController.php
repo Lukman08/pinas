@@ -24,7 +24,8 @@ class ActionController extends Controller
         $file = $request->file('file');
         $path = $file->storeAs('', $file->getClientOriginalName(), 'drive_d');
 
-        return redirect()->back()->with('success', 'File uploaded successfully');
+        // return redirect()->back()->with('success', 'File uploaded successfully');
+        return response()->json(['success' => 'File berhasil di-upload'], 200);
     }
 
     public function delete($file)
