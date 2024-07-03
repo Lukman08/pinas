@@ -54,7 +54,7 @@
                     </li>
                     -->
                 </ul>
-                <form id="logoutForm" action="{{ route('logout') }}" method="post" style="display: none;">
+                {{-- <form id="logoutForm" action="{{ route('logout') }}" method="post" style="display: none;">
                     @csrf
                     <button type="submit" class="dropdown-item">Logout</button>
                 </form>
@@ -62,6 +62,11 @@
                     <img src="{{ asset('img/usr.png') }}" alt="Icon"
                         style="width: 16px; height: 16px; margin-right: 5px;">
                     Lukman Hakim
+                </a> --}}
+                <a id="logoutBtn" class="btn btn-success" style="background-color: #83B4FF;" disabled>
+                    <img src="{{ asset('img/usr.png') }}" alt="Icon"
+                        style="width: 16px; height: 16px; margin-right: 5px;">
+                    Admin
                 </a>
             </div>
         </div>

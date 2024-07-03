@@ -54,7 +54,12 @@
                     </li>
                     -->
                 </ul>
-                <a class="btn btn-success" href="/login" style="background-color: #83B4FF;">Login</a>
+                {{-- <a class="btn btn-success" href="/login" style="background-color: #83B4FF;">Login</a> --}}
+                <a id="logoutBtn" class="btn btn-success" style="background-color: #83B4FF;" disabled>
+                    <img src="{{ asset('img/usr.png') }}" alt="Icon"
+                        style="width: 16px; height: 16px; margin-right: 5px;">
+                    Siswa
+                </a>
             </div>
         </div>
     </nav>

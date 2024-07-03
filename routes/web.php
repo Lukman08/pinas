@@ -31,7 +31,7 @@ Route::get('/', [ActionController::class, 'index'])->name('index');
 Route::get('/userdownload/{file}', [ActionController::class, 'userdownload'])->name('userdownload');
 
 // admin
-Route::middleware(['checklogin'])->prefix('admin')->group(function () {
+Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [ActionController::class, 'dashboard'])->name('dashboard');
     Route::get('/nas', [ActionController::class, 'nas'])->name('nas');
     Route::get('/download/{file}', [ActionController::class, 'download'])->name('download');
