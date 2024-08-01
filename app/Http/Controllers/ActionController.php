@@ -19,13 +19,35 @@ class ActionController extends Controller
     {
         $request->validate([
             'file' => 'required|file',
+            'offset' => 'required|integer',
+            'totalChunks' => 'required|integer',
+            'originalName' => 'required|string',
         ]);
 
         $file = $request->file('file');
-        $path = $file->storeAs('', $file->getClientOriginalName(), 'drive_d');
+        $originalName = $request->input('originalName');
+        $offset = $request->input('offset');
+        $totalChunks = $request->input('totalChunks');
 
-        // return redirect()->back()->with('success', 'File uploaded successfully');
-        return response()->json(['success' => 'File berhasil di-upload'], 200);
+        // Simpan sementara di folder temp
+        $tempDir = storage_path('app/temp');
+        if (!is_dir($tempDir)) {
+            mkdir($tempDir, 0777, true);
+        }
+
+        $tempFilePath = $tempDir . '/' . $originalName . '.part';
+        $handle = fopen($tempFilePath, 'ab');
+        fwrite($handle, file_get_contents($file->getRealPath()));
+        fclose($handle);
+
+        // Jika ini adalah bagian terakhir, pindahkan file dari temp ke tujuan akhir
+        if ($offset + 1 >= $totalChunks) {
+            $finalPath = Storage::disk('drive_d')->path($originalName);
+            rename($tempFilePath, $finalPath);
+            return response()->json(['success' => 'File berhasil di-upload'], 200);
+        }
+
+        return response()->json(['success' => 'Chunk uploaded successfully'], 200);
     }
 
     public function delete($file)

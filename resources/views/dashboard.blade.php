@@ -183,34 +183,57 @@
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('datatable/datatables.min.js') }}"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
         function uploadFile() {
-            const form = document.getElementById('uploadForm');
-            const formData = new FormData(form);
+            const fileInput = document.getElementById('file');
+            const file = fileInput.files[0];
+            const chunkSize = 10 * 1024 * 1024; // 10MB per chunk
+            const totalChunks = Math.ceil(file.size / chunkSize);
+            let currentChunk = 0;
+
             const progressBar = document.getElementById('progressBar');
 
-            axios.post('{{ route('upload') }}', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    },
-                    onUploadProgress: function(progressEvent) {
-                        let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                        progressBar.style.width = percentCompleted + '%';
-                        progressBar.innerHTML = percentCompleted + '%';
-                    }
-                })
-                .then(function(response) {
-                    alert(response.data.success);
-                    progressBar.style.width = '0%';
-                    progressBar.innerHTML = '0%';
-                    location.reload(); // Refresh halaman
-                })
-                .catch(function(error) {
-                    alert('Gagal upload file');
-                    progressBar.style.width = '0%';
-                    progressBar.innerHTML = '0%';
-                });
+            const uploadChunk = () => {
+                const chunk = file.slice(currentChunk * chunkSize, (currentChunk + 1) * chunkSize);
+                const formData = new FormData();
+                formData.append('file', chunk);
+                formData.append('offset', currentChunk);
+                formData.append('totalChunks', totalChunks);
+                formData.append('originalName', file.name); // Include original name
+
+                axios.post('{{ route('upload') }}', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            'Content-Disposition': `attachment; filename="${file.name}"`
+                        },
+                        onUploadProgress: function(progressEvent) {
+                            let percentCompleted = Math.round(((currentChunk * chunkSize + progressEvent
+                                .loaded) / file.size) * 100);
+                            progressBar.style.width = percentCompleted + '%';
+                            progressBar.innerHTML = percentCompleted + '%';
+                        }
+                    })
+                    .then(function(response) {
+                        if (currentChunk < totalChunks - 1) {
+                            currentChunk++;
+                            uploadChunk();
+                        } else {
+                            alert('Upload complete');
+                            progressBar.style.width = '0%';
+                            progressBar.innerHTML = '0%';
+                            location.reload(); // Refresh halaman
+                        }
+                    })
+                    .catch(function(error) {
+                        alert('Gagal upload file');
+                        progressBar.style.width = '0%';
+                        progressBar.innerHTML = '0%';
+                    });
+            };
+
+            uploadChunk();
         }
 
         $(document).ready(function() {
